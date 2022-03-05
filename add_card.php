@@ -9,6 +9,8 @@
 
         $sql = "INSERT INTO payment (number,cvv,expiry,user_fk) VALUES (?,?,?,?)";
 
+        # sup
+
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("sssi", $number,$cvv,$expiry,$user_id);
         $stmt->execute();}
