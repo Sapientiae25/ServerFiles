@@ -1,8 +1,8 @@
 <?php
     require_once 'conn.php';
 
-    $sql = "SELECT ac.account_id,ad.address_id,ac.name,ad.address,ad.postcode,ac.open,ac.close,
-    ad.latitude,ad.longitude FROM address_jnct as jnct
+    $sql = "SELECT ac.account_id,ad.address_id,ac.name,ad.address,ad.postcode,DATE_FORMAT(ac.open,'%H:%i') as open,
+    DATE_FORMAT(ac.close,'%H:%i') as close,ad.latitude,ad.longitude FROM address_jnct as jnct
         INNER JOIN address AS ad ON ad.address_id = jnct.address_fk
         INNER JOIN account AS ac ON ac.account_id = jnct.account_fk";
     $stmt= $conn->prepare($sql);
@@ -18,15 +18,15 @@
         $stmt->bind_param("i", $account_id);
         $stmt->execute();
         $res = $stmt->get_result(); 
-        $rating = 0;
+        $rating = "";
         while($row2 = mysqli_fetch_assoc($res)) { $rating = strval($row2["rating"]);}
+        if (strlen($rating) == 0){$rating = "0.0";}
 
         $info += ["rating" => $rating];
         $name = strval($row["name"]);
         $address_id = strval($row["address_id"]);
         $address = strval($row["address"]);
         $postcode = strval($row["postcode"]);
-        $rating = strval($row["rating"]);
         $longitude = strval($row["longitude"]);
         $latitude = strval($row["latitude"]);
         $close = strval($row["close"]);

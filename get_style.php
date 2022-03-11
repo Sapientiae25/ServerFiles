@@ -6,7 +6,7 @@
 
         $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info FROM styles_jnct AS jnct
         INNER JOIN style AS st ON st.style_id = jnct.style_fk
-        WHERE jnct.account_fk = ? and st.privacy = 0";
+        WHERE jnct.account_fk = ?";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i",$account_id);

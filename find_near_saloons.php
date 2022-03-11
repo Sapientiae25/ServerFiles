@@ -6,8 +6,7 @@ if (isset($_POST['lat']) && isset($_POST['long'])){
     $long = $_POST['long'];
     
     $sql = "SELECT acc.account_id,ad.address_id,acc.name,ad.address,date_format(acc.close,'%H:%i') AS close,
-    date_format(acc.open,'%H:%i') AS open,ad.postcode,ad.latitude,ad.longitude, ROUND(SQRT(
-        POW(69.1 * (latitude - ?), 2) +
+    date_format(acc.open,'%H:%i') AS open,ad.postcode,ad.latitude,ad.longitude, ROUND(SQRT(POW(69.1 * (latitude - ?), 2) +
         POW(69.1 * (? - longitude) * COS(latitude / 57.3), 2))*1.609, 2) AS distance
     FROM address_jnct as jnct
     INNER JOIN address as ad ON ad.address_id = jnct.address_fk
@@ -28,8 +27,9 @@ if (isset($_POST['lat']) && isset($_POST['long'])){
         $stmt->bind_param("i", $account_id);
         $stmt->execute();
         $res = $stmt->get_result(); 
-        $rating = 0;
+        $rating = "";
         while($row2 = mysqli_fetch_assoc($res)) { $rating = strval($row2["rating"]);}
+        if (strlen($rating) == 0){$rating = "0.0";}
 
         $info += ["rating" => $rating];
         $name = strval($row["name"]);
@@ -38,7 +38,6 @@ if (isset($_POST['lat']) && isset($_POST['long'])){
         $close = strval($row["close"]);
         $open = strval($row["open"]);
         $postcode = strval($row["postcode"]);
-        $rating = strval($row["rating"]);
         $longitude = strval($row["longitude"]);
         $latitude = strval($row["latitude"]);
         $distance = strval($row["distance"]);

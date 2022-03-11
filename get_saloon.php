@@ -22,15 +22,15 @@ if (isset($_POST['account_id'])){
         $stmt->bind_param("i", $account_id);
         $stmt->execute();
         $res = $stmt->get_result(); 
-        $rating = 0;
+        $rating = "";
         while($row2 = mysqli_fetch_assoc($res)) { $rating = strval($row2["rating"]);}
+        if (strlen($rating) == 0){$rating = "0.0";}
 
         $info += ["rating" => $rating];
         $name = strval($row["name"]);
         $address_id = strval($row["address_id"]);
         $address = strval($row["address"]);
         $postcode = strval($row["postcode"]);
-        $rating = strval($row["rating"]);
         $longitude = strval($row["longitude"]);
         $latitude = strval($row["latitude"]);
         $close = strval($row["close"]);
