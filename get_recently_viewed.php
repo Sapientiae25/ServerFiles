@@ -4,9 +4,9 @@ if (isset($_POST['user_fk'])){
 
     $user_fk = $_POST['user_fk'];
     
-    $sql = "SELECT DISTINCT style_fk,st.name FROM viewed
+    $sql = "SELECT style_fk,st.name FROM viewed
         INNER JOIN style AS st ON st.style_id = style_fk
-        WHERE user_fk = ?";
+        WHERE user_fk = ? ORDER BY view_date";
 
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("i", $user_fk);
