@@ -11,7 +11,6 @@ if (isset($_POST['text'])){
     WHERE st.name LIKE '%".$text."%'";
 
     $stmt= $conn->prepare($sql);
-    $stmt->bind_param("i", $account_id);
     $stmt->execute();
     $result = $stmt->get_result(); 
     $infos = array();

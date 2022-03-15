@@ -9,30 +9,17 @@
         $user_id = $_POST['user_id'];
         $style_id = $_POST['style_id'];
 
-        $sql = "SELECT ? < NOW() as past";
-               
-        $stmt= $conn->prepare($sql);
-        $stmt->bind_param("s", $start);
-        $stmt->execute();
-        $result = $stmt->get_result(); 
-    
-        while($row = mysqli_fetch_assoc($result)) {
-            $old = intval($row["past"]);
-            if ($old == 0){
-                $sql = "SET @endtime = ADDTIME(?,?)";
-               
-                $stmt= $conn->prepare($sql);
-                $stmt->bind_param("ss", $start,$diff);
-                $stmt->execute();
+        $sql = "SET @endtime = ADDTIME(?,?)";
         
-                $sql = "INSERT INTO booking (user_fk, account_fk, start, end, style_fk) VALUES (?,?,?,@endTime,?)";
-                       
-                $stmt= $conn->prepare($sql);
-                $stmt->bind_param("iisi", $user_id,$account_id,$start,$style_id);
-                $stmt->execute();
-            }
-            echo $old;
-        }
+        $stmt= $conn->prepare($sql);
+        $stmt->bind_param("ss", $start,$diff);
+        $stmt->execute();
+
+        $sql = "INSERT INTO booking (user_fk, account_fk, start, end, style_fk) VALUES (?,?,?,@endTime,?)";
+                
+        $stmt= $conn->prepare($sql);
+        $stmt->bind_param("iisi", $user_id,$account_id,$start,$style_id);
+        $stmt->execute();
 
 
     }else{echo "failed";}

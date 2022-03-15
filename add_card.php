@@ -7,9 +7,7 @@
         $expiry = $_POST['expiry'];
         $user_id = $_POST['user_id'];
 
-        $sql = "INSERT INTO payment (number,cvv,expiry,user_fk) VALUES (?,?,?,?)";
-
-        # sup
+        $sql = "INSERT INTO payment (card_number,cvv,expiry,user_fk) VALUES (?,?,?,?)";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("sssi", $number,$cvv,$expiry,$user_id);

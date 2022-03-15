@@ -5,7 +5,7 @@ if (isset($_POST['user_fk']) && isset($_POST['style_fk'])){
     $user_fk = $_POST['user_fk'];
     $style_fk = $_POST['style_fk'];
 
-    $sql = "SELECT * FROM viewed WHERE user_fk = ? AND style_fk = ?";
+    $sql = "SELECT * FROM viewed WHERE user_fk = ? AND style_fk = ? LIMIT 1";
 
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("ii", $user_fk,$style_fk);
@@ -25,6 +25,7 @@ if (isset($_POST['user_fk']) && isset($_POST['style_fk'])){
         $stmt->bind_param("ii", $user_fk,$style_fk);
         $stmt->execute();
     }
+    echo $num;
 
     }
     else{echo "failed";}
