@@ -4,7 +4,7 @@
 
         $style_id = $_POST['style_id'];
 
-        $sql = "SELECT image_id FROM style_images WHERE style_fk = ?";
+        $sql = "SELECT image_id FROM style_images WHERE style_fk = ? LIMIT 1";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i",$style_id);

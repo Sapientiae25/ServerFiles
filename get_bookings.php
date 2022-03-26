@@ -5,10 +5,11 @@
         $account_id = $_POST['account_id'];
         $dates = array();
 
-        $sql = "SELECT start, end, st.name,booking_id,style_fk,st.price,us.email FROM booking
+        $sql = "SELECT start, end, st.name,booking_id,style_fk,st.price,us.email,im.image_id FROM booking
             INNER JOIN style AS st ON st.style_id = style_fk
             INNER JOIN users AS us ON us.user_id = user_fk
-            WHERE account_fk = ? AND cast(start as date) >= now()" ;
+            LEFT JOIN style_images AS im ON im.style_fk = jnct.style_fk
+            WHERE account_fk = ? AND cast(start as date) >= now() GROUP BY st.style_id" ;
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $account_id);
@@ -24,7 +25,9 @@
             $style_id = strval($row["style_fk"]);
             $price = strval($row["price"]);
             $email = strval($row["email"]);
+            $image_id = strval($row["image_id"]);
 
+            $book += ["image_id" => $image_id];
             $book += ["start" => $start];
             $book += ["end" => $end];
             $book += ["booking_id" => $booking_id];

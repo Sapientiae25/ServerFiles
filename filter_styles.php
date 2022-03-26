@@ -26,9 +26,10 @@
         $length = implode("','",$length);
 
         $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,jnct.account_fk,acc.name as account_name,ad.address,
-            AVG(rv.rating) as rating FROM styles_jnct AS jnct
+            AVG(rv.rating) as rating,im.image_id FROM styles_jnct AS jnct
             INNER JOIN style AS st ON st.style_id = jnct.style_fk
             LEFT JOIN reviews as rv ON rv.style_fk = jnct.style_fk
+            LEFT JOIN style_images as im ON im.style_fk = jnct.style_fk
             INNER JOIN address_jnct as adj ON adj.account_fk = jnct.account_fk
             INNER JOIN address as ad ON ad.address_id = adj.address_fk
             INNER JOIN account AS acc ON acc.account_id = jnct.account_fk
@@ -52,7 +53,9 @@
             $style_info = strval($row["info"]);
             $account_name = strval($row["account_name"]);
             $address = strval($row["address"]);
+            $image_id = strval($row["image_id"]);
 
+            $info += ["image_id" => $image_id];
             $info += ["address" => $address];
             $info += ["rating" => $rating];
             $info += ["account_name" => $account_name];

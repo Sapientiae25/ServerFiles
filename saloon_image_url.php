@@ -5,7 +5,6 @@
         $account_id = $_POST['account_id'];
         $image = $_POST['image'];
 
-
         $sql = "INSERT INTO saloon_images (saloon_fk) VALUES (?)";
 
         $stmt= $conn->prepare($sql);
