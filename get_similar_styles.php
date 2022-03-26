@@ -1,16 +1,17 @@
 <?php
-    if (isset($_POST['account_id'])){
+    if (isset($_POST['account_id']) && isset($_POST['style_id'])){
         require_once 'conn.php';
 
         $account_id = $_POST['account_id'];
+        $current_id = $_POST['style_id'];
 
         $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,st.privacy,im.image_id FROM styles_jnct AS jnct
         INNER JOIN style AS st ON st.style_id = jnct.style_fk
         INNER JOIN style_images AS im ON im.style_fk = jnct.style_fk
-        WHERE jnct.account_fk = ?  GROUP BY st.style_id";
+        WHERE jnct.account_fk = ? AND st.style_id <> ?  GROUP BY st.style_id";
 
         $stmt= $conn->prepare($sql);
-        $stmt->bind_param("i",$account_id);
+        $stmt->bind_param("ii",$account_id,$current_id);
         $stmt->execute();
         $result = $stmt->get_result(); 
         $infos = array();

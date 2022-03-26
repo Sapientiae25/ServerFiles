@@ -26,9 +26,8 @@
         $length = implode("','",$length);
 
         $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,jnct.account_fk,acc.name as account_name,ad.address,
-            AVG(rv.rating) as rating,im.image_id FROM styles_jnct AS jnct
+            im.image_id FROM styles_jnct AS jnct
             INNER JOIN style AS st ON st.style_id = jnct.style_fk
-            LEFT JOIN reviews as rv ON rv.style_fk = jnct.style_fk
             LEFT JOIN style_images as im ON im.style_fk = jnct.style_fk
             INNER JOIN address_jnct as adj ON adj.account_fk = jnct.account_fk
             INNER JOIN address as ad ON ad.address_id = adj.address_fk
@@ -45,6 +44,15 @@
         while($row = mysqli_fetch_assoc($result)) {
             $info = array();
             $style_id = strval($row["style_id"]);
+            $sql = "SELECT AVG(rating) as rating FROM reviews WHERE style_fk = ?" ;
+            $stmt= $conn->prepare($sql);
+            $stmt->bind_param("i",$style_id);
+            $stmt->execute();
+            $res = $stmt->get_result(); 
+            $rating = "";
+            while($row2 = mysqli_fetch_assoc($res)) { $rating = strval($row2["rating"]);}
+            if (strlen($rating) == 0){$rating = "0.0";}
+
             $account_fk = strval($row["account_fk"]);
             $name = strval($row["name"]);
             $price = strval($row["price"]);
