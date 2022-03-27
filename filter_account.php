@@ -30,8 +30,8 @@
         INNER JOIN style AS st ON st.style_id = jnct.style_fk
         INNER JOIN filters AS fil ON fil.style_fk = jnct.style_fk
         LEFT JOIN style_images AS im ON im.style_fk = jnct.style_fk
-        WHERE jnct.account_fk = ? AND IF(? = 2, true, fil.gender = ? OR fil.gender=2) AND fil.length IN ('".$length."')
-         GROUP BY st.style_id";
+        WHERE jnct.account_fk = ? AND IF(? = 2, true, fil.gender = ? OR fil.gender=2) AND fil.length IN ('".$length."') 
+        GROUP BY st.style_id";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("iii", $account_id,$gender,$gender);
@@ -40,9 +40,7 @@
         $infos = array();
 
         while($row = mysqli_fetch_assoc($result)) {
-            $filters = array();
             $info = array();
-            $filters += ["empty" => 1];
             $style_id = strval($row["style_id"]);
             $name = strval($row["name"]);
             $price = strval($row["price"]);

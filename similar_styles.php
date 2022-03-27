@@ -22,7 +22,7 @@
 
             $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,st.privacy,im.image_id FROM styles_jnct AS jnct
             INNER JOIN style AS st ON st.style_id = jnct.style_fk
-            INNER JOIN style_images AS im ON im.style_fk = jnct.style_fk
+            LEFT JOIN style_images AS im ON im.style_fk = jnct.style_fk
             INNER JOIN filters as fil ON fil.style_fk = jnct.style_fk
             WHERE st.style_id <> ? AND fil.gender = ? AND fil.length = ? GROUP BY st.style_id";
 

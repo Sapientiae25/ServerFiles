@@ -4,7 +4,7 @@
 
         $user_id = $_POST['user_id'];
 
-        $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,acc.name as account_name,ad.address,
+        $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,acc.name,im.image_id as account_name,ad.address,
         cast(bo.start as date) as start,bo.account_fk FROM booking AS bo
         INNER JOIN styles_jnct AS jnct ON jnct.style_fk = bo.style_fk
         INNER JOIN style AS st ON st.style_id = jnct.style_fk
@@ -12,8 +12,9 @@
         INNER JOIN address_jnct AS adj ON adj.account_fk = jnct.account_fk
         LEFT JOIN reviews AS rv ON rv.style_fk = jnct.style_fk
         INNER JOIN address AS ad ON ad.address_id = adj.address_fk
-        WHERE bo.user_fk = ? AND start < NOW()";
-
+        LEFT JOIN style_images as im ON im.style_fk = jnct.style_fk
+        WHERE bo.user_fk = ? AND start < NOW() GROUP BY st.style_id";
+ 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i",$user_id);
         $stmt->execute();
@@ -42,6 +43,7 @@
             $start = strval($row["start"]);
             $account_fk = strval($row["account_fk"]);
 
+            $info += ["image_id" => strval($row["image_id"])];
             $info += ["rating" => $rating];
             $info += ["account_fk" => $account_fk];
             $info += ["name" => $name];

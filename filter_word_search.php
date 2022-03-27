@@ -8,7 +8,8 @@ if (isset($_POST['text'])){
      FROM styles_jnct AS jnct
     INNER JOIN style AS st ON st.style_id = jnct.style_fk
     INNER JOIN review AS rv ON rv.style_fk = jnct.style_fk
-    WHERE st.name LIKE '%".$text."%'";
+    LEFT JOIN style_images as im ON im.style_fk = jnct.style_fk
+    WHERE st.name GROUP BY st.style_id LIKE '%".$text."%'";
 
     $stmt= $conn->prepare($sql);
     $stmt->execute();

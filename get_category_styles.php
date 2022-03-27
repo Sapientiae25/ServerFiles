@@ -4,9 +4,10 @@
 
         $category_id = $_POST['category_id'];
 
-        $sql = "SELECT st.style_id, st.name, st.price, st.time, st.max_time, st.info FROM category_jnct AS jnct
+        $sql = "SELECT st.style_id, st.name, st.price, st.time, st.max_time, st.info,im.image_id FROM category_jnct AS jnct
         INNER JOIN style AS st ON st.style_id = jnct.style_fk
-        WHERE jnct.category_fk = ?";
+        LEFT JOIN style_images as im ON im.style_fk = jnct.style_fk
+        WHERE jnct.category_fk = ? GROUP BY st.style_id";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $category_id);
@@ -32,6 +33,7 @@
             $max_time = strval($row["max_time"]);
             $style_info = strval($row["info"]);
 
+            $info += ["image_id" => strval($row["image_id"])];
             $info += ["rating" => $rating];
             $info += ["name" => $name];
             $info += ["price" => $price];
