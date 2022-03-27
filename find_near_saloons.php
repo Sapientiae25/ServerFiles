@@ -5,13 +5,14 @@ if (isset($_POST['lat']) && isset($_POST['long'])){
     $lat = $_POST['lat'];
     $long = $_POST['long'];
     
-    $sql = "SELECT acc.account_id,ad.address_id,acc.name,ad.address,date_format(acc.close,'%H:%i') AS close,
+    $sql = "SELECT acc.account_id,ad.address_id,acc.name,ad.address,date_format(acc.close,'%H:%i') AS close,im.image_id,
     date_format(acc.open,'%H:%i') AS open,ad.postcode,ad.latitude,ad.longitude, ROUND(SQRT(POW(69.1 * (latitude - ?), 2) +
         POW(69.1 * (? - longitude) * COS(latitude / 57.3), 2))*1.609, 2) AS distance
     FROM address_jnct as jnct
     INNER JOIN address as ad ON ad.address_id = jnct.address_fk
     INNER JOIN account as acc ON acc.account_id = jnct.account_fk
-    ORDER BY distance LIMIT 15";
+    LEFT JOIN saloon_images as im ON im.saloon_fk = jnct.account_fk
+    ORDER BY distance GROUP BY jnct.account_fk LIMIT 15";
 
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("dd", $lat,$long);

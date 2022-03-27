@@ -9,7 +9,7 @@
         INNER JOIN account as acc ON acc.account_id = jnct.account_fk
         INNER JOIN style as st ON st.style_id = jnct.style_fk
         INNER JOIN filters as fil ON fil.style_fk = jnct.style_fk
-        LEFT JOIN style_images as im ON im.style_fk = jnct.style_fk
+        INNER JOIN style_images as im ON im.style_fk = jnct.style_fk
         WHERE IF(fil.gender = ?, true, fil.gender = ?) GROUP BY st.style_id";
 
     $stmt= $conn->prepare($sql);

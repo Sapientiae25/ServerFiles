@@ -4,12 +4,13 @@
 
         $user_id = $_POST['user_id'];
 
-        $sql = "SELECT ac.account_id,ad.address_id,ac.name,ad.address,ad.postcode,
+        $sql = "SELECT ac.account_id,ad.address_id,ac.name,ad.address,ad.postcode,im.image_id,
         ac.open,ac.close,ad.latitude,ad.longitude FROM address_jnct as jnct
             INNER JOIN address AS ad ON ad.address_id = jnct.address_fk
             INNER JOIN saloon_likes AS lik ON lik.saloon_fk = jnct.account_fk
             INNER JOIN account AS ac ON ac.account_id = jnct.account_fk
-            WHERE lik.user_fk = ?";
+            LEFT JOIN saloon_images as im ON im.saloon_fk = jnct.account_fk
+            WHERE lik.user_fk = ? GROUP BY jnct.account_fk";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i",$user_id);
@@ -29,6 +30,7 @@
             while($row2 = mysqli_fetch_assoc($res)) { $rating = strval($row2["rating"]);}
             if (strlen($rating) == 0){$rating = "0.0";}
 
+            $info += ["image_id" => strval($row["image_id"])];
             $info += ["rating" => $rating];
             $name = strval($row["name"]);
             $address_id = strval($row["address_id"]);

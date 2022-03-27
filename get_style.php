@@ -7,7 +7,7 @@
         $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,im.image_id FROM styles_jnct AS jnct
         INNER JOIN style AS st ON st.style_id = jnct.style_fk
         LEFT JOIN style_images AS im ON im.style_fk = jnct.style_fk
-        WHERE jnct.account_fk = ?";
+        WHERE jnct.account_fk = ? GROUP BY st.style_id";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i",$account_id);

@@ -4,13 +4,15 @@
 
         $user_id = $_POST['user_id'];
 
-        $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,acc.name as account_name,jnct.account_fk
+        $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,acc.name as account_name,jnct.account_fk,im.image_id
          FROM style_likes AS lik
         INNER JOIN styles_jnct AS jnct ON jnct.style_fk = lik.style_fk
         INNER JOIN style AS st ON st.style_id = jnct.style_fk
         INNER JOIN account AS acc ON acc.account_id = jnct.account_fk
         INNER JOIN review AS rv ON rv.style_fk = jnct.style_fk
-        INNER JOIN address_jnct AS adj ON adj.account_fk = jnct.account_fk ";
+        LEFT JOIN style_images as im ON im.style_fk = jnct.style_fk
+        INNER JOIN address_jnct AS adj ON adj.account_fk = jnct.account_fk 
+        GROUP BY st.style_id";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i",$user_id);
@@ -38,6 +40,7 @@
             $account_fk = strval($row["account_fk"]);
             $account_name = strval($row["account_name"]);
 
+            $info += ["image_id" => strval($row["image_id"])];
             $info += ["rating" => $rating];
             $info += ["account_name" => $account_name];
             $info += ["account_fk" => $account_fk];
