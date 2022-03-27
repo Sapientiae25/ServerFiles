@@ -30,8 +30,6 @@
             while($row2 = mysqli_fetch_assoc($res)) { $rating = strval($row2["rating"]);}
             if (strlen($rating) == 0){$rating = "0.0";}
 
-            $info += ["image_id" => strval($row["image_id"])];
-            $info += ["rating" => $rating];
             $name = strval($row["name"]);
             $address_id = strval($row["address_id"]);
             $address = strval($row["address"]);
@@ -41,7 +39,9 @@
             $latitude = strval($row["latitude"]);
             $close = strval($row["close"]);
             $open = strval($row["open"]);
-    
+
+            $info += ["image_id" => strval($row["image_id"])];
+            $info += ["rating" => $rating];
             $info += ["name" => $name];
             $info += ["address" => $address];
             $info += ["rating" => $rating];

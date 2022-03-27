@@ -4,9 +4,9 @@
 
         $gender = $_POST['gender'];
         
-        $sql = "SELECT im.image_id FROM filters 
-        INNER JOIN style_images as im ON im.style_fk = style_fk
-        WHERE gender = ?
+        $sql = "SELECT im.image_id FROM filters AS fil
+        INNER JOIN style_images as im ON im.style_fk = fil.style_fk
+        WHERE fil.gender = ?
         ORDER BY RAND()
         LIMIT 1;";
 

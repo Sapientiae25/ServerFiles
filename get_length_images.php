@@ -4,11 +4,11 @@
 
         $length = $_POST['length'];
         
-        $sql = "SELECT im.image_id FROM filters 
-        INNER JOIN style_images as im ON im.style_fk = style_fk
-        WHERE length = ?
+        $sql = "SELECT im.image_id FROM filters AS fil
+        LEFT JOIN style_images as im ON im.style_fk = fil.style_fk
+        WHERE fil.length = ?
         ORDER BY RAND()
-        LIMIT 1;";
+        LIMIT 1";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $length);

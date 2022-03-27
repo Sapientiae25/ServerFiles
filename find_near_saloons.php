@@ -12,7 +12,8 @@ if (isset($_POST['lat']) && isset($_POST['long'])){
     INNER JOIN address as ad ON ad.address_id = jnct.address_fk
     INNER JOIN account as acc ON acc.account_id = jnct.account_fk
     LEFT JOIN saloon_images as im ON im.saloon_fk = jnct.account_fk
-    ORDER BY distance GROUP BY jnct.account_fk LIMIT 15";
+    GROUP BY jnct.account_fk
+    ORDER BY distance LIMIT 15";
 
     $stmt= $conn->prepare($sql);
     $stmt->bind_param("dd", $lat,$long);
@@ -43,6 +44,7 @@ if (isset($_POST['lat']) && isset($_POST['long'])){
         $latitude = strval($row["latitude"]);
         $distance = strval($row["distance"]);
 
+        $info += ["image_id" => strval($row["image_id"])];
         $info += ["distance" => $distance];
         $info += ["name" => $name];
         $info += ["address" => $address];

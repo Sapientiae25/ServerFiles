@@ -4,7 +4,7 @@
 
         $user_id = $_POST['user_id'];
 
-        $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,acc.name,im.image_id as account_name,ad.address,
+        $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,acc.name as account_name,ad.address,im.image_id,
         cast(bo.start as date) as start,bo.account_fk FROM booking AS bo
         INNER JOIN styles_jnct AS jnct ON jnct.style_fk = bo.style_fk
         INNER JOIN style AS st ON st.style_id = jnct.style_fk
