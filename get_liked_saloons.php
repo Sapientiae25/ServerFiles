@@ -4,8 +4,8 @@
 
         $user_id = $_POST['user_id'];
 
-        $sql = "SELECT ac.account_id,ad.address_id,ac.name,ad.address,ad.postcode,im.image_id,
-        ac.open,ac.close,ad.latitude,ad.longitude FROM address_jnct as jnct
+        $sql = "SELECT ac.account_id,ad.address_id,ac.name,ad.address,ad.postcode,im.image_id,date_format(ac.open,'%H:%i') AS open,
+            date_format(ac.close,'%H:%i') AS close,ad.latitude,ad.longitude FROM address_jnct as jnct
             INNER JOIN address AS ad ON ad.address_id = jnct.address_fk
             INNER JOIN saloon_likes AS lik ON lik.saloon_fk = jnct.account_fk
             INNER JOIN account AS ac ON ac.account_id = jnct.account_fk
@@ -34,7 +34,6 @@
             $address_id = strval($row["address_id"]);
             $address = strval($row["address"]);
             $postcode = strval($row["postcode"]);
-            $rating = strval($row["rating"]);
             $longitude = strval($row["longitude"]);
             $latitude = strval($row["latitude"]);
             $close = strval($row["close"]);

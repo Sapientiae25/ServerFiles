@@ -10,10 +10,11 @@
         INNER JOIN style as st ON st.style_id = jnct.style_fk
         INNER JOIN filters as fil ON fil.style_fk = jnct.style_fk
         INNER JOIN style_images as im ON im.style_fk = jnct.style_fk
-        WHERE IF(fil.gender = ?, true, fil.gender = ?) GROUP BY st.style_id";
+        GROUP BY st.style_id
+        ORDER BY (CASE WHEN fil.gender = ? THEN 3 WHEN fil.gender = 2 THEN 2 ELSE 0 END) DESC ";
 
     $stmt= $conn->prepare($sql);
-    $stmt->bind_param("ii", $gender,$gender);
+    $stmt->bind_param("i", $gender);
     $stmt->execute();
     $result = $stmt->get_result(); 
     $infos = array();

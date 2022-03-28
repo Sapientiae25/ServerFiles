@@ -4,7 +4,7 @@
 
         $user_id = $_POST['user_id'];
 
-        $sql = "SELECT location_id,address,city,country,postcode,chosen,town FROM saved_locations WHERE user_fk = ?";
+        $sql = "SELECT location_id,address,city,country,postcode,chosen,town,latitude,longitude FROM saved_locations WHERE user_fk = ?";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i",$user_id);
@@ -21,7 +21,11 @@
             $location_id = strval($row["location_id"]);
             $chosen = strval($row["chosen"]);
             $town = strval($row["town"]);
+            $latitude = strval($row["latitude"]);
+            $longitude = strval($row["longitude"]);
     
+            $info += ["latitude" => $latitude];
+            $info += ["longitude" => $longitude];
             $info += ["chosen" => $chosen];
             $info += ["location_id" => $location_id];
             $info += ["address" => $address];
