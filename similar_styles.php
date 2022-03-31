@@ -17,8 +17,8 @@
 
         while($row = mysqli_fetch_assoc($result)) {
 
-            $gender = $_POST['gender'];
-            $length = $_POST['length'];
+            $gender = strval($row["gender"]);
+            $length = strval($row["length"]);
 
             $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,st.privacy,im.image_id FROM styles_jnct AS jnct
             INNER JOIN style AS st ON st.style_id = jnct.style_fk

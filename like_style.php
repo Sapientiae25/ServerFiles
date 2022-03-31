@@ -11,7 +11,7 @@
         $stmt->bind_param("ii", $user_id,$style_id);
         $stmt->execute();
         $result = $stmt->get_result(); 
-        if (mysqli_num_rows($result)==0) {
+        if (mysqli_num_rows($result) == 0) {
             $sql = "INSERT INTO style_likes (user_fk,style_fk) VALUES (?,?)";
             $stmt= $conn->prepare($sql);
             $stmt->bind_param("ii", $user_id,$style_id);

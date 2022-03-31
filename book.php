@@ -15,7 +15,7 @@
         $stmt->bind_param("ss", $start,$diff);
         $stmt->execute();
 
-        $sql = "INSERT INTO booking (user_fk, account_fk, start, end, style_fk) VALUES (?,?,?,@endTime,?)";
+        $sql = "INSERT INTO booking (user_fk, account_fk, start, end, style_fk,viewed) VALUES (?,?,?,@endTime,?,0)";
                 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("iisi", $user_id,$account_id,$start,$style_id);

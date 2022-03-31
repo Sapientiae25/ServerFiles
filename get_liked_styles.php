@@ -9,9 +9,7 @@
         INNER JOIN styles_jnct AS jnct ON jnct.style_fk = lik.style_fk
         INNER JOIN style AS st ON st.style_id = jnct.style_fk
         INNER JOIN account AS acc ON acc.account_id = jnct.account_fk
-        INNER JOIN reviews AS rv ON rv.style_fk = jnct.style_fk
         LEFT JOIN style_images as im ON im.style_fk = jnct.style_fk
-        INNER JOIN address_jnct AS adj ON adj.account_fk = jnct.account_fk 
         WHERE lik.user_fk = ?
         GROUP BY st.style_id";
 

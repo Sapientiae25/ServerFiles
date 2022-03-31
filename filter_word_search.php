@@ -4,11 +4,15 @@ if (isset($_POST['text'])){
 
     $text = $_POST['text'];
     
-    $sql = "SELECT st.style_id, st.name, st.price, st.time, st.max_time, st.info,jnct.account_fk,ac.name as ac_name,im.image_id
+    $sql = "SELECT st.style_id, st.name, st.price, st.time, st.max_time, st.info,jnct.account_fk,ac.name as ac_name,im.image_id,
+    ad.address
      FROM styles_jnct AS jnct
     INNER JOIN style AS st ON st.style_id = jnct.style_fk
-    INNER JOIN review AS rv ON rv.style_fk = jnct.style_fk
     LEFT JOIN style_images as im ON im.style_fk = jnct.style_fk
+    INNER JOIN account AS ac ON ac.account_id = jnct.account_fk  
+    INNER JOIN address_jnct AS adj ON adj.account_fk = jnct.account_fk
+    INNER JOIN address AS ad ON ad.address_id = adj.address_fk
+
     WHERE st.name LIKE '%".$text."%' GROUP BY st.style_id";
 
     $stmt= $conn->prepare($sql);
@@ -34,6 +38,7 @@ if (isset($_POST['text'])){
         $account_fk = strval($row["account_fk"]);
         $ac_name = strval($row["ac_name"]);
 
+        $info += ["address" => strval($row["address"])];
         $info += ["image_id" => strval($row["image_id"])];
         $info += ["rating" => $rating];
         $info += ["name" => $name];
