@@ -4,7 +4,7 @@
 
         $account_id = $_POST['account_id'];
 
-        $sql = "SELECT COUNT(viewed) AS num FROM booking WHERE account_fk = ? AND viewed = 1";
+        $sql = "SELECT COUNT(viewed) AS num FROM booking WHERE account_fk = ? AND viewed = 0";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i",$account_id);
