@@ -18,6 +18,15 @@ if (isset($_POST['style_id'])){
 
     while($row = mysqli_fetch_assoc($result)) {
         $style_id = strval($row["style_id"]);
+        $sql = "SELECT AVG(rating) as rating FROM reviews WHERE style_fk = ?" ;
+        $stmt= $conn->prepare($sql);
+        $stmt->bind_param("i",$style_id);
+        $stmt->execute();
+        $res = $stmt->get_result(); 
+        $rating = "";
+        while($row2 = mysqli_fetch_assoc($res)) { $rating = strval($row2["rating"]);}
+        if (strlen($rating) == 0){$rating = "0.0";}
+
         $name = strval($row["name"]);
         $price = strval($row["price"]);
         $time = strval($row["time"]);
@@ -26,6 +35,7 @@ if (isset($_POST['style_id'])){
         $account_id = strval($row["account_id"]);
         $account_name = strval($row["account_name"]);
 
+        $info += ["rating" => $rating];
         $info += ["account_name" => $account_name];
         $info += ["name" => $name];
         $info += ["price" => $price];

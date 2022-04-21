@@ -58,10 +58,11 @@
 
             $book += ["start" => $start];
             $book += ["end" => $end];
-            array_push($dates,$book);
+            array_push($breaks,$book);
+            // array_push($dates,$book);
         }
-        $return_info += ["dates" => $dates];
-        $return_info += ["break" => $breaks];
-        echo json_encode($return_info);
+        // $return_info += ["dates" => $dates];
+        // $return_info += ["break" => $breaks];
+        echo json_encode($breaks);
     }else{echo "failed";}
 ?>

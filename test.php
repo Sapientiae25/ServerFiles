@@ -1,14 +1,21 @@
 <?php
         require_once 'conn.php';
 
+        $style_id = 2;
+        $date = "2022-03-14 00:00:00";
 
-        $sql = "SELECT COUNT(viewed) AS num FROM booking WHERE account_fk = 10 AND viewed = 0";
+        $sql = "SELECT (TIMESTAMPDIFF(HOUR,?, start)) AS diff,start FROM booking WHERE booking_id = ?";
 
         $stmt= $conn->prepare($sql);
+        $stmt->bind_param("ss",$date,$style_id);
         $stmt->execute();
         $result = $stmt->get_result(); 
-        $count = 0;
+        $diff = "";
 
-        while($row = mysqli_fetch_assoc($result)) { $count = strval($row["num"]); }
-        echo $count;
+        while($row = mysqli_fetch_assoc($result)) {
+            $diff = strval($row["diff"]);
+            echo "\n";
+        echo $diff;
+
+        }
 ?>
