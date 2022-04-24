@@ -20,9 +20,9 @@
         $stmt->bind_param("s", $close);
         $stmt->execute();
 
-        $sql = "SELECT time_to_sec(break_start) DIV 60 AS break_start, time_to_sec(break_end) DIV 60 AS break_end FROM breaks
-            WHERE account_fk = ? AND cast(break_start as date) BETWEEN @startTime and @endTime OR cast(break_end as date)
-             BETWEEN @startTime and @endTime";
+        $sql = "SELECT (IF(break_start BETWEEN @startTime and @endTime,time_to_sec(break_start) DIV 60,null)),
+            (IF(break_end BETWEEN @startTime and @endTime,time_to_sec(break_end) DIV 60,null)) AS book_end FROM breaks
+            WHERE account_fk = ? AND break_start BETWEEN @startTime and @endTime OR break_end BETWEEN @startTime and @endTime;";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $account_id);
@@ -41,10 +41,9 @@
             array_push($breaks,$break);
         }
 
-        $sql = "SELECT time_to_sec(start) DIV 60 AS book_start, time_to_sec(end) DIV 60 AS book_end FROM booking
-            INNER JOIN style AS st ON st.style_id = style_fk
-            WHERE account_fk = ? AND cast(start as date) = @startTime OR
-            cast(end as date) = @startTime";
+        $sql = "SELECT (IF(start BETWEEN @startTime and @endTime,time_to_sec(start) DIV 60,null)),
+                    (IF(end BETWEEN @startTime and @endTime,time_to_sec(end) DIV 60,null)) AS book_end FROM booking
+                    WHERE account_fk = ? AND start BETWEEN @startTime and @endTime OR end BETWEEN @startTime and @endTime;";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $account_id);
@@ -59,10 +58,7 @@
             $book += ["start" => $start];
             $book += ["end" => $end];
             array_push($breaks,$book);
-            // array_push($dates,$book);
         }
-        // $return_info += ["dates" => $dates];
-        // $return_info += ["break" => $breaks];
         echo json_encode($breaks);
     }else{echo "failed";}
 ?>

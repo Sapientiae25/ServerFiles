@@ -1,21 +1,26 @@
 <?php
         require_once 'conn.php';
 
-        $style_id = 2;
-        $date = "2022-03-14 00:00:00";
+        $dt   = new DateTime();
+        $date = $dt->createFromFormat('d/m/Y H:i', $d);
+        $dte =  $date->format('Y-m-d H:i:s');
+        echo $dte;
+        // $m = "90";
+        
+        // $stmt= $conn->prepare($sql);
+        // $stmt->bind_param("si", $dte,$m);
+        // $stmt->execute();
 
-        $sql = "SELECT (TIMESTAMPDIFF(HOUR,?, start)) AS diff,start FROM booking WHERE booking_id = ?";
+        // $sql = "SELECT @endtime";
+        
+        // $stmt= $conn->prepare($sql);
+        // $stmt->execute();
+        // $result = $stmt->get_result(); 
+    
+        // while($row = mysqli_fetch_assoc($result)) {
+        //     // $old = intval($row["past"]);
+        // echo json_encode($row);
+        // }
 
-        $stmt= $conn->prepare($sql);
-        $stmt->bind_param("ss",$date,$style_id);
-        $stmt->execute();
-        $result = $stmt->get_result(); 
-        $diff = "";
-
-        while($row = mysqli_fetch_assoc($result)) {
-            $diff = strval($row["diff"]);
-            echo "\n";
-        echo $diff;
-
-        }
+        
 ?>
