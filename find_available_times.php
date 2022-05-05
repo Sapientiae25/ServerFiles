@@ -51,7 +51,7 @@
 
         $sql = "SELECT (IF(start BETWEEN @startTime and @endTime,time_to_sec(start) DIV 60,null)) AS book_start,
                     (IF(end BETWEEN @startTime and @endTime,time_to_sec(end) DIV 60,null)) AS book_end FROM booking
-                    WHERE account_fk = ? AND start BETWEEN @startTime and @endTime OR end BETWEEN @startTime and @endTime";
+                    WHERE account_fk = ? AND cancel = 0 AND start BETWEEN @startTime and @endTime OR end BETWEEN @startTime and @endTime";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $account_id);

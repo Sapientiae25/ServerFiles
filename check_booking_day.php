@@ -6,7 +6,7 @@
         $account_id = $_POST['account_id'];
 
         $sql = "SELECT HOUR(start) as s_hour, MINUTE(start) as s_min, HOUR(end) as e_hour, MINUTE(end) as e_min 
-        FROM booking WHERE account_fk = ? AND ? BETWEEN cast(start as date) and cast(end as date)";
+        FROM booking WHERE account_fk = ? AND cancel = 0 AND ? BETWEEN cast(start as date) and cast(end as date)";
                
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("is", $account_id,$date);

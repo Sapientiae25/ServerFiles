@@ -56,6 +56,7 @@
                 $stmt->execute();
                 echo $break_end;}
         }
+        echo "$break_start, \n $break_end \n $account_id";
 
         $sql = "INSERT INTO breaks (break_start, break_end, account_fk) VALUES (?,?,?)";
         $stmt = $conn->prepare($sql);

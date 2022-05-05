@@ -12,7 +12,7 @@
         INNER JOIN account AS acc ON acc.account_id = jnct.account_fk
         INNER JOIN address_jnct as adj ON adj.account_fk = jnct.account_fk
         INNER JOIN address as ad ON ad.address_id = adj.address_fk
-        WHERE bk.user_fk = ? AND start > now()" ;
+        WHERE bk.user_fk = ? AND start > now() AND cancel = 0" ;
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $user_id);

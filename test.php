@@ -2,12 +2,11 @@
         require_once 'conn.php';
 
         $account_id = 10;
-        $open = "2022/04/26 00:00";
-        $close = "2022/04/26 23:59";
-    
+        $open = "2022/05/06 05:00";
+        $close = "2022/05/06 06:30";
         $breaks = array();
-    
-        
+        $infos = array();
+
         $sql = "SET @startTime = cast(? as DATETIME)";
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("s", $open);
@@ -18,9 +17,15 @@
         $stmt->bind_param("s", $close);
         $stmt->execute();
 
-        $sql = "SELECT (IF(start BETWEEN @startTime and @endTime,time_to_sec(start) DIV 60,null)) AS book_start,
-        (IF(end BETWEEN @startTime and @endTime,time_to_sec(end) DIV 60,null)) AS book_end FROM booking
-        WHERE account_fk = ? AND start BETWEEN @startTime and @endTime OR end BETWEEN @startTime and @endTime";
+        $sql = "SELECT @startTime < NOW() as past";
+        $stmt= $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result(); 
+        while($row = mysqli_fetch_assoc($result)) {$past = intval($row["past"]);}
+
+        $sql = "SELECT DATE_FORMAT(start, '%H:%i') AS book_start,style_fk,st.name, DATE_FORMAT(end, '%H:%i') AS book_end FROM booking
+                    INNER JOIN style AS st ON st.style_id = style_fk
+                    WHERE account_fk = ? AND start BETWEEN @startTime and @endTime OR end BETWEEN @startTime and @endTime";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $account_id);
@@ -28,14 +33,22 @@
         $result = $stmt->get_result(); 
 
         while($row = mysqli_fetch_assoc($result)) {
-        $book = array();
-        $start = strval($row["book_start"]);
-        $end = strval($row["book_end"]);
+            $book = array();
+            $start = strval($row["book_start"]);
+            $end = strval($row["book_end"]);
+            $style_id = strval($row["style_fk"]);
+            $name = strval($row["name"]);
 
-        $book += ["calendar" => 2];
-        $book += ["start" => $start];
-        $book += ["end" => $end];
-        array_push($breaks,$book);
+            $book += ["start" => $start];
+            $book += ["end" => $end];
+            $book += ["style_id" => $style_id];
+            $book += ["name" => $name];
+
+            array_push($breaks,$book);
         }
-        echo json_encode($breaks);
+
+        $infos += ["breaks" => $breaks];
+        $infos += ["past" => $past];
+
+        echo json_encode($infos);
 ?>

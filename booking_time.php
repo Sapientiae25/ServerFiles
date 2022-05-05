@@ -19,7 +19,7 @@
         }
 
         $sql = "SELECT cast(start as time),cast(end as time) FROM booking
-        WHERE account_fk = ? AND cast(start as date) = ? AND cast(end as date) = ?";
+        WHERE account_fk = ? AND cast(start as date) = ? AND cast(end as date) = ? AND cancel = 0";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("iss", $account_id,$date,$date);

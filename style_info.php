@@ -1,19 +1,19 @@
 <?php
-    if (isset($_POST['style_id'])){
+    if (isset($_POST['booking_id'])){
         require_once 'conn.php';
 
-        $style_id = $_POST['style_id'];
+        $booking_id = $_POST['booking_id'];
 
-        $sql = "SELECT st.name, st.price, st.time, st.max_time, us.email, booking_id FROM booking
-        INNER JOIN style as st ON booking.style
-        INNER JOIN users as us ON booking.user_fk
-        WHERE style_id = ?";
+        $sql = "SELECT st.name, st.price, st.time, st.max_time, us.email,FROM booking AS bk
+        INNER JOIN style as st ON bk.style_fk
+        INNER JOIN users as us ON bk.user_fk
+        WHERE bk.booking_id = ? AND cancel = 0";
 
         $stmt= $conn->prepare($sql);
-        $stmt->bind_param("i", $style_id);
+        $stmt->bind_param("i", $booking_id);
         $stmt->execute();
         $result = $stmt->get_result(); 
-        $infos = array();
+        $info = array();
 
         while($row = mysqli_fetch_assoc($result)) {
             $info = array();
@@ -22,16 +22,14 @@
             $price = strval($row["price"]);
             $time = strval($row["time"]);
             $max_time = strval($row["max_time"]);
-            $booking_id = strval($row["booking_id"]);
+            $email = strval($row["email"]);
 
             $info += ["name" => $name];
             $info += ["price" => $price];
             $info += ["time" => $time];
             $info += ["email" => $email];
             $info += ["max_time" => $max_time];
-            $info += ["booking_id" => $booking_id];
-            array_push($infos,$info);
         }
-        echo json_encode($infos);
+        echo json_encode($info);
     }else{echo "failed";}
 ?>

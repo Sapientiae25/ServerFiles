@@ -27,7 +27,7 @@
 
         $sql = "SELECT start,end,st.name,booking_id FROM booking
         INNER JOIN style AS st ON st.style_id = style_fk
-            WHERE account_fk = ? AND style_id != ? AND cast(start as datetime)
+            WHERE account_fk = ? AND style_id != ? AND cancel = 0 AND cast(start as datetime)
             BETWEEN @startTime and @endTime OR cast(end as datetime) BETWEEN @startTime and @endTime";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ii", $account_id,$exist_id);

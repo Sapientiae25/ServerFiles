@@ -7,7 +7,8 @@
 
         $result = 1;
 
-        $sql = "SELECT booking_id FROM booking WHERE account_fk = ? AND ? BETWEEN cast(start as datetime) and cast(end as datetime)";
+        $sql = "SELECT booking_id FROM booking WHERE cancel= 0 AND 
+        account_fk = ? AND cancel = 0 AND ? BETWEEN cast(start as datetime) and cast(end as datetime)";
                
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("is", $account_id,$datetime);

@@ -64,7 +64,7 @@
 
         $sql = "SELECT start, end, st.name,booking_id,style_fk,cast(start as date) as s_date FROM booking
             INNER JOIN style AS st ON st.style_id = style_fk
-            WHERE account_fk = ? AND cast(start as date) = @startTime OR
+            WHERE account_fk = ? AND cancel = 0 AND cast(start as date) = @startTime OR
             cast(end as date) = @startTime";
 
         $stmt= $conn->prepare($sql);

@@ -9,7 +9,7 @@
         INNER JOIN style AS st ON st.style_id = bk.style_fk
         INNER JOIN users AS us ON us.user_id = user_fk
         LEFT JOIN style_images AS im ON im.style_fk = bk.style_fk
-        WHERE account_fk = ? AND cast(start as date) >= now() GROUP BY st.style_id" ;
+        WHERE account_fk = ? AND cast(start as date) >= now() AND cancel = 0 GROUP BY st.style_id" ;
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $account_id);
