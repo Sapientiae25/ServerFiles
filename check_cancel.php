@@ -4,9 +4,9 @@
 
         $user_id = $_POST['user_id'];
 
-        $sql = "SELECT COUNT(viewed) AS num FROM cancelled
-                INNER JOIN booking AS bk ON bk.booking_id = booking_fk 
-                WHERE bk.user_fk = ? AND viewed = 0";
+        $sql = "SELECT COUNT(ca.viewed) AS num FROM cancelled as ca
+        INNER JOIN booking AS bk ON bk.booking_id = ca.booking_fk 
+        WHERE bk.user_fk = ? AND ca.viewed = 0";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i",$user_id);
