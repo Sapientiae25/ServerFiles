@@ -4,9 +4,10 @@
 
         $booking_id = $_POST['booking_id'];
 
-        $sql = "SELECT st.name, st.price, st.time, st.max_time, us.email,FROM booking AS bk
+        $sql = "SELECT st.name, st.price, st.time, st.max_time,im.image_id,us.email FROM booking AS bk
         INNER JOIN style as st ON bk.style_fk
         INNER JOIN users as us ON bk.user_fk
+        LEFT JOIN style_images as im ON im.style_fk = bk.style_fk
         WHERE bk.booking_id = ? AND cancel = 0";
 
         $stmt= $conn->prepare($sql);
@@ -24,6 +25,7 @@
             $max_time = strval($row["max_time"]);
             $email = strval($row["email"]);
 
+            $info += ["image_id" => strval($row["image_id"])];
             $info += ["name" => $name];
             $info += ["price" => $price];
             $info += ["time" => $time];

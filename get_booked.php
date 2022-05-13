@@ -58,8 +58,34 @@
             $book += ["name" => $name];
             $book += ["style_id" => $style_id];
 
-            array_push($infos,$book);
-        }
+            array_push($infos,$book);}
+
+
+        $sql = "SELECT reason,time,ac.name as account_name,ac.email,st.name,st.style_id,account_id FROM cancelled
+                INNER JOIN booking AS bk ON bk.booking_id = booking_fk 
+                INNER JOIN account AS ac ON ac.account_id = account_id 
+                INNER JOIN style AS st ON st.style_id = bk.style_fk
+                WHERE bk.user_fk = ? AND start > now() AND cancel = 0 AND viewed = 0";
+
+        $stmt= $conn->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result(); 
+        $cancels = array();
+        
+        while($row = mysqli_fetch_assoc($result)) {
+            $cancel = array();
+
+            $cancel += ["reason" => strval($row["reason"])];
+            $cancel += ["time" => strval($row["time"])];
+            $cancel += ["account_name" => strval($row["account_name"])];
+            $cancel += ["name" => strval($row["name"])];
+            $cancel += ["email" => strval($row["email"])];
+            $cancel += ["account_id" => strval($row["account_id"])];
+            $cancel += ["style_id" => strval($row["style_id"])];
+
+            array_push($cancels,$cancel);}
+
         echo json_encode($infos);
     }else{echo "failed";}
 ?>

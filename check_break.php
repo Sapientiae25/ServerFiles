@@ -25,10 +25,10 @@
         $result = $stmt->get_result(); 
         while($row = mysqli_fetch_assoc($result)) {$past = intval($row["past"]);}
 
-        $sql = "SELECT DATE_FORMAT(start, '%H:%i') AS book_start,style_fk,st.name, DATE_FORMAT(end, '%H:%i') AS book_end,us.email
-                    FROM booking 
+        $sql = "SELECT DATE_FORMAT(start, '%H:%i') AS book_start,style_fk,booking_id,st.name,
+         DATE_FORMAT(end, '%H:%i') AS book_end,us.email FROM booking 
                     INNER JOIN style AS st ON st.style_id = style_fk
-                    INNER JOIN user AS us ON us.user_id = user_fk
+                    INNER JOIN users AS us ON us.user_id = user_fk
                     WHERE account_fk = ? AND cancel = 0 AND start BETWEEN @startTime and @endTime OR end BETWEEN @startTime and @endTime";
 
         $stmt= $conn->prepare($sql);
@@ -43,7 +43,9 @@
             $style_id = strval($row["style_fk"]);
             $name = strval($row["name"]);
             $email = strval($row["email"]);
+            $booking_id = strval($row["booking_id"]);
 
+            $book += ["booking_id" => $booking_id];
             $book += ["email" => $email];
             $book += ["start" => $start];
             $book += ["end" => $end];
