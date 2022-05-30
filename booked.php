@@ -5,7 +5,7 @@
         $user_id = $_POST['user_id'];
 
         $sql = "SELECT st.style_id,st.name,st.price,st.time,st.max_time,st.info,acc.name as account_name,ad.address,im.image_id,
-        cast(bk.start as date) as start,bk.account_fk FROM booking AS bk
+        DATE_FORMAT(bk.start,'%d/%m/%Y') as s_date,DATE_FORMAT(bk.start,'%H:%i') as s_time,bk.account_fk,bk.booking_id FROM booking AS bk
         INNER JOIN styles_jnct AS jnct ON jnct.style_fk = bk.style_fk
         INNER JOIN style AS st ON st.style_id = jnct.style_fk
         INNER JOIN account AS acc ON acc.account_id = jnct.account_fk
@@ -13,7 +13,7 @@
         LEFT JOIN reviews AS rv ON rv.style_fk = jnct.style_fk
         INNER JOIN address AS ad ON ad.address_id = adj.address_fk
         LEFT JOIN style_images as im ON im.style_fk = jnct.style_fk
-        WHERE bk.user_fk = ? AND start < NOW() AND cancel = 0 GROUP BY st.style_id";
+        WHERE bk.user_fk = ? AND bk.start < NOW() AND cancel = 0 GROUP BY st.style_id";
  
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i",$user_id);
@@ -40,7 +40,6 @@
             $style_info = strval($row["info"]);
             $account_name = strval($row["account_name"]);
             $address = strval($row["address"]);
-            $start = strval($row["start"]);
             $account_fk = strval($row["account_fk"]);
 
             $info += ["image_id" => strval($row["image_id"])];
@@ -54,7 +53,9 @@
             $info += ["style_id" => $style_id];
             $info += ["account_name" => $account_name];
             $info += ["address" => $address];
-            $info += ["start" => $start];
+            $info += ["s_date" => strval($row["s_date"])];
+            $info += ["s_time" => strval($row["s_time"])];
+            $info += ["booking_id" => strval($row["booking_id"])];
             array_push($infos,$info);
         }
         echo json_encode($infos);

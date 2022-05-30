@@ -5,7 +5,7 @@
         $user_id = $_POST['user_id'];
         $return = array();
 
-        $sql = "SELECT st.style_id, st.name, st.price, st.time, st.max_time, st.info,cast(bk.start as date) as s_date,im.image_id,
+        $sql = "SELECT st.style_id, st.name, st.price, st.time, st.max_time, st.info,DATE_FORMAT(bk.start,'%d/%m/%Y') as s_date,im.image_id,
         DATE_FORMAT(bk.start,'%H:%i') as s_time,acc.name as account_name,ad.address,bk.booking_id,acc.account_id
           FROM booking AS bk
         INNER JOIN style AS st ON st.style_id = bk.style_fk
@@ -14,7 +14,7 @@
         INNER JOIN account AS acc ON acc.account_id = jnct.account_fk
         INNER JOIN address_jnct as adj ON adj.account_fk = jnct.account_fk
         INNER JOIN address as ad ON ad.address_id = adj.address_fk
-        WHERE bk.user_fk = ? AND start > now() AND cancel = 0" ;
+        WHERE bk.user_fk = ? AND bk.start > now() - INTERVAL 7 DAY AND cancel = 0" ;
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $user_id);
@@ -65,14 +65,14 @@
 
 
         $sql = "SELECT reason,ac.name as account_name,ac.email,st.name,st.time,st.info,st.style_id,account_id,ad.address,st.price,
-        cast(bk.start as date) as s_date,DATE_FORMAT(bk.start,'%H:%i') as s_time,im.image_id FROM cancelled as ca
+        DATE_FORMAT(bk.start,'%d/%m/%Y') as s_date,DATE_FORMAT(bk.start,'%H:%i') as s_time,im.image_id FROM cancelled as ca
         INNER JOIN booking AS bk ON bk.booking_id = booking_fk 
         INNER JOIN account AS ac ON ac.account_id = ca.account_fk
         INNER JOIN address_jnct as adj ON adj.account_fk = ca.account_fk
         INNER JOIN address as ad ON ad.address_id = adj.address_fk
         INNER JOIN style AS st ON st.style_id = bk.style_fk
         LEFT JOIN style_images as im ON im.style_fk = bk.style_fk
-        WHERE bk.user_fk = ? AND (start > now() OR ca.viewed = 0)";
+        WHERE bk.user_fk = ? AND (bk.start > now() - INTERVAL 7 DAY OR ca.viewed = 0)";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $user_id);
@@ -122,6 +122,11 @@
         $stmt->execute();
         $result = $stmt->get_result(); 
 
+        $sql = "UPDATE booking SET user_viewed = 1 WHERE account_fk = ? AND user_viewed = 0";
+
+        $stmt= $conn->prepare($sql);
+        $stmt->bind_param("i",$account_id);
+        $stmt->execute();
 
         echo json_encode($return);
     }else{echo "failed";}

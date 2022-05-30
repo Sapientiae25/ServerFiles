@@ -14,7 +14,18 @@
         $result = $stmt->get_result(); 
         $count = 0;
 
-        while($row = mysqli_fetch_assoc($result)) { $count = strval($row["num"]); }
+        while($row = mysqli_fetch_assoc($result)) { $count = intval($row["num"]); }
+
+        $sql = "SELECT COUNT(user_viewed) AS num FROM booking 
+        WHERE user_viewed = 0 AND cancel = 0 AND user_fk = ?";
+
+        $stmt= $conn->prepare($sql);
+        $stmt->bind_param("i",$user_id);
+        $stmt->execute();
+        $result = $stmt->get_result(); 
+
+        while($row = mysqli_fetch_assoc($result)) { $count = $count + intval($row["num"]); }
+
         echo $count;
     }else{echo "failed";}
 ?>
