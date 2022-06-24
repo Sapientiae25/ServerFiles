@@ -2,59 +2,39 @@
         require_once 'conn.php';
 
         $account_id = 10;
-        $open = "2022/05/06 05:00";
-        $close = "2022/05/06 06:30";
-        $breaks = array();
-        $infos = array();
-
-        $sql = "SET @startTime = cast(? as DATETIME)";
-        $stmt= $conn->prepare($sql);
-        $stmt->bind_param("s", $open);
-        $stmt->execute();
-
-        $sql = "SET @endTime = cast(? as DATETIME)";
-        $stmt= $conn->prepare($sql);
-        $stmt->bind_param("s", $close);
-        $stmt->execute();
-
-        $sql = "SELECT @startTime < NOW() as past";
-        $stmt= $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result(); 
-        while($row = mysqli_fetch_assoc($result)) {$past = intval($row["past"]);}
-
-        $sql = "SELECT DATE_FORMAT(start, '%H:%i') AS book_start,style_fk,booking_id,st.name,
-        DATE_FORMAT(end, '%H:%i') AS book_end,us.email FROM booking 
-                   INNER JOIN style AS st ON st.style_id = style_fk
-                   INNER JOIN users AS us ON us.user_id = user_fk
-                   WHERE account_fk = ? AND cancel = 0 AND start BETWEEN @startTime and @endTime OR end BETWEEN @startTime and @endTime";
+        
+        $sql = "SELECT category_id, category FROM categories AS cat WHERE account_fk = ?";
 
         $stmt= $conn->prepare($sql);
         $stmt->bind_param("i", $account_id);
         $stmt->execute();
         $result = $stmt->get_result(); 
+        $infos = array();
 
         while($row = mysqli_fetch_assoc($result)) {
-            $book = array();
-            $start = strval($row["book_start"]);
-            $end = strval($row["book_end"]);
-            $style_id = strval($row["style_fk"]);
-            $name = strval($row["name"]);
-            $email = strval($row["email"]);
-            $booking_id = strval($row["booking_id"]);
+            $info = array();
+            $id = strval($row["category_id"]);
+            $image_id = 0;
 
-            $book += ["booking_id" => $booking_id];
-            $book += ["email" => $email];
-            $book += ["start" => $start];
-            $book += ["end" => $end];
-            $book += ["style_id" => $style_id];
-            $book += ["name" => $name];
+            $sql = "SELECT im.image_id FROM category_jnct AS jnct
+            INNER JOIN style_images AS im ON im.style_fk = jnct.style_fk
+            INNER JOIN categories AS cat ON cat.category_id = jnct.category_fk
+            WHERE cat.account_fk = ? AND jnct.category_fk = ?";
+        
+            $stmt= $conn->prepare($sql);
+            $stmt->bind_param("ii", $account_id,$id);
+            $stmt->execute();
+            $result2 = $stmt->get_result(); 
 
-            array_push($breaks,$book);
+            while($row2 = mysqli_fetch_assoc($result2)) { $image_id = strval($row2["image_id"]); }
+
+            $info += ["category" => strval($row["category"])];
+            $info += ["category_id" => $id];
+            $info += ["image_id" => $image_id];
+
+            array_push($infos,$info);
         }
 
-        $infos += ["breaks" => $breaks];
-        $infos += ["past" => $past];
-
+        
         echo json_encode($infos);
 ?>

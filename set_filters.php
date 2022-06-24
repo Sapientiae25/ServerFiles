@@ -12,5 +12,8 @@
         $stmt->bind_param("sss", $style_fk,$gender,$length);
         $stmt->execute();
 
+        // 0 = MALE, 1 = FEMALE, 2 = UNISEX
+        // 0 = LONG, 1 = MEDIUM, 2 = SHORT, 3 = ALL
+
     }else{echo "failed";}
 ?>

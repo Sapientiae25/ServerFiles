@@ -59,4 +59,7 @@
             array_push($infos,$info);}
 
         echo json_encode($infos);
+        
+        // 0 = MALE, 1 = FEMALE, 2 = UNISEX
+        // 0 = LONG, 1 = MEDIUM, 2 = SHORT, 3 = ALL
 ?>

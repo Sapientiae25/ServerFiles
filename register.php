@@ -15,15 +15,15 @@
         $email = $_POST['email'];
         $town = $_POST['town'];
 
-        $sql = "INSERT INTO account (name, password, email, number, open, close) VALUES (?,?,?,null,null,null)";
+        $sql = "INSERT INTO account (name, password, email, number, open, close) VALUES (?,?,?,null,'06:00:00','21:00:00')";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sssssss", $name, $password, $email);
+        $stmt->bind_param("sss", $name, $password, $email);
         $stmt->execute();
         $account_id = strval(mysqli_insert_id($conn));
         
         $sql = "INSERT INTO address (city, postcode, country, address, latitude, longitude, town) VALUES (?,?,?,?,?,?,?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssiis", $city, $postcode, $country, $address, $latitude, $longitude, $town);
+        $stmt->bind_param("ssssdds", $city, $postcode, $country, $address, $latitude, $longitude, $town);
         $stmt->execute();
         $addres_fk = strval(mysqli_insert_id($conn));
 

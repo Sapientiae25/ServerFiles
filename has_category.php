@@ -1,15 +1,14 @@
 <?php
-    if (isset($_POST['name']) && isset($_POST['account_id'])){
+    if (isset($_POST['account_fk'])){
         require_once 'conn.php';
 
-        $name = $_POST['name'];
-        $account_id = $_POST['account_id'];
+        $account_fk = $_POST['account_fk'];
         $result = 1;
 
-        $sql = "SELECT style_id FROM style WHERE name = ? and account_id = ?";
+        $sql = "SELECT 1 FROM categories WHERE account_fk = ?";
 
         $stmt= $conn->prepare($sql);
-        $stmt->bind_param("ss", $name,$account_id);
+        $stmt->bind_param("i", $account_fk);
         $stmt->execute();
         $stmt->store_result();
         $num = $stmt->num_rows(); 
